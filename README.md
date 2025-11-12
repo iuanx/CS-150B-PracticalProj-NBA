@@ -151,98 +151,90 @@ To compute this value, you must index two separate columns and divide the two. `
 
 ```python
 #THIS IS PSEUDOCODE IT WILL NOT RUN
-set an empty list you will add reliable players to []
+set an empty list you will add reliable players to [], this is what you will return once you have found the reliable players.
 
 for each row in data:
    proportion of games started = int(games_started)/ int(games_played)
    if the proportion of games started is greater than or equal to 0.95:
-      append a list containing their name and their percent of games started to your empty list.
+      append a list containing [name, percent of games started] to your empty list.
    
 ```
+## !!!
+**Notice: it says *percent* of games started, not proportion.**
 
-Finally return the *total* rounded to one decimal place with:
+To get the percent, round the proportion you compute to 2 decimals, then multiply the value by 100.
+
 ```
-round(total, 1)
-```
-### Step 6 - Print Team Function:
+#Example
+x = 0.78932
+x_rounded = round(x, 2) - rounds a value to two decimal spots.
+x_percent = x_rounded * 100
 
-The `print_team()` function displays your final basketball dream team in a neatly formatted table. This function takes one argument:
-- `team`: The dictionary containing your selected players for each position
-
-Here's how the function works:
-
-1. First, it prints a header with "=== MY DREAM TEAM ===" to clearly mark the start of your team display
-
-2. Next, it creates column headers for the table with:
-     - "POSITION" - Which basketball position (PG, SG, etc.)
-     - "PLAYER" - The player's name
-     - "PTS" - Points per game
-     - "REB" - Rebounds per game
-     - "AST" - Assists per game
-
-3. The `:<5` and `:<25` in the formatting tell Python to:
-     - Left-align the text (that's what the `<` symbol does)
-     - Reserve 5 spaces for most columns (or 25 spaces for the player name)
-     - This ensures everything lines up nicely in columns
-
-4. It draws a line of 50 dashes (`-`) to separate the headers from the data
-
-5. For each position in the team dictionary:
-     - It checks if there is a player assigned (`if player:`)
-     - It prints the position, player name, and their key statistics
-     - Note that `player[1]` accesses the player's name, while the other indices access specific statistics from the end of the list
-     - It is your task to replace the dummy values currently in the template the correct indices for *points*, *rebounds*, and *assists*.
-
-6. Finally, it:
-     - Draws another line of dashes to close the table
-     - Calls `calculate_team_rating(team)` to get the overall team rating
-     - Displays "TEAM RATING" followed by the calculated value
-```
-Remember that the output should look like:
-
-=== MY DREAM TEAM ===
-POSITION PLAYER                    PTS   REB   AST  
---------------------------------------------------
-PG    Luka Dončić               28.4  9.1   8.7  
-SG    Josh Giddey               12.5  7.8   6.4  
-SF    Jaylen Hoard              14.7  12    2.4  
-PF    Domantas Sabonis          18.9  12.3  5.8  
-C     Rudy Gobert               15.6  14.7  1.1  
---------------------------------------------------
-TEAM RATING: 170.4
-```
-### Step 7 - Pick user strategy:
-Update the function *get_user_strategy* so that it takes in user input with the prompt "Enter your choice (1-4): " which shows that the user will be able to select one of the 4 options already printed above. The format of the rest of the function should be a structure of if statements that check to see if the user input is equal to a specific value and then returns the dictionary corresponding to that input value.
-```
-#All returned dictionaries should be of the format:
-    {
-         'pg', index,
-         'sg', index
-         'sf', index,
-         'pf', index,
-         'c': index,
-    }
-```
-Try using the header returned from the first step along with the *.index()* builtin function to find the index of the columns that store points, assists and rebounds. The forth option may use any combination of values to create a unique team.
-```
-#Basic structure
-choice = input("Enter your choice (1-4): ")
-if(choice == '1'):
-   return dictionary with points index
-elif(choice == '2'):
-   return dictionary with rebounds index
-elif(choice == '3'):
- return dictionary with assists index
-else:
-   return dictionary with your own combination of team selection values
+print(x_percent)
+79.0
 ```
 
-### main() function:
-Lastly once all other functions are completed make sure that your main follows this basic structure:
-- call *read_csv()* and store data in *data*, and *header* values.
-- call *get_user_strategy()* and store returned dictionary in variable *team_template*.
-- call *build_team()* with *data* and *team_template*
-- Lastly call *print_team()* with the team returned from build team.
+Here's what this function call should look like for the OKC Thunder:
+
+```python
+league = csv_reader("NBA24-25season.csv")
+okc = filter_team(league , "OKC")
+print(find_most_reliable(okc))
+```
+
+`[['Luguentz Dort', 100.0],
+ ['Shai Gilgeous-Alexander', 100.0],
+ ['Chet Holmgren', 100.0],
+ ['Jalen Williams', 100.0]]`
+
+ Some teams will have more reliable players than others, some may only have one. Feel free to use the test above to call the function on your favorite team and find your teams
+ most reliable players for the 2024/2025 season.
+
+
+### Step 6 - Tell a Summarizing Story Using the Functions:
+
+The `main()` function will be where you call all the functions that you have already written, but display it in a neat way for all users to interpret.
+
+ - You will need to find the league leaders for points, assists, and rebounds using the `find_stat_max()` function
+ - Then find the highest scorer for the denver nuggets using the `find_stat_max()` again, **but** for the filtered Denver Nuggets data only which you can get using `filter_team()`
+ - Next is the call for `find_stat_max_by_position()` which you will use to find the Denver Nuggets' leading passer (max assists) at the point guard position.
+ - And, finally the last call is the function call for `find_most_reliable()`. **It is important you call this function with ONLY the Denver Nuggets data** or else you will have a long list of lists with reliable players throughout the entire league. (There are 116.)
+
+Piecing it all together is the tricky part, it should remind you of your first few labs where you had to match output exactly how it is expected in Zybooks. Tedious, we know. But it is an imporant defining feature of Python to watch for every spelling, new line, and indentation required. We highly reccomend using f-strings for the formatting here, though any concatenation method we have learned will work.
+
+The format to follow is listed below with the 2023/2024 NBA Season stats. *Make sure you include the empty lines in between each chunk of information* You can do this by adding an extra print() at the end of your chunk.
+
+**Hint:** You can use a for loop for the final chunk `Most Reliable Players for the Nuggets:` to speed up the process.
+
+```python
+
+for player in nuggets_reliable:
+   print(f"{player[0]} started {player[1]}% of the games he was available.")
+
+```
+
+
+## Expected Output of main() 
+```
+League Leaders:
+Points: Joel Embiid with 34.7
+Rebounds: Domantas Sabonis with 13.7
+Assists: Tyrese Haliburton with 10.9
+
+Best Scorer for the Nuggets: Nikola Jokić with 26.4 points
+Best Passer at PG for the Nuggets: Jamal Murray with 6.5 assists
+
+Most Reliable Players for the Nuggets:
+Kentavious Caldwell-Pope started 100.0% of the games he was available.
+Aaron Gordon started 100.0% of the games he was available.
+Nikola Jokić started 100.0% of the games he was available.
+Jamal Murray started 100.0% of the games he was available.
+Michael Porter Jr. started 100.0% of the games he was available.
+```
+
+**The stats and players you see below are different as this output is for the 2023/2024 season**
+
+
 
 
     
