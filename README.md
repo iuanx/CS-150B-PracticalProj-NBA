@@ -18,6 +18,8 @@ The project also deals with player positions so here is a guide to the abreviati
 ### What is all this code?:
 Lets walk through all the functions that you will have to implement to complete this project:
 ```
+0. Identify column indexes
+   - Open the NBA 2024/2025 data and uncomment the provided variable names as you find their index value.
 
 1. csv_reader(file)
    - Reads NBA player data from a CSV file
@@ -67,58 +69,64 @@ So the elements in the 0th postition of every list form the column:
 [Adrian]
 [Lisa]
 ```
-### Step 2 - Filtering the data:
+### Step 2 - Filtering the data by team:
 The next step is filtering the data to return a filtered dataset that contains only the values for players of a certain team.
-This function has two parameters: *data* which contains the data you read in the last step and *postion* which is the position you will be filtering for.
-The first thing to do is to find the index at which the player position is located and store this information somewhere. The rest of the project will be much easier if you don't have to keep going back to the dataset to remember which values are stored where. It is recomended to use global variables on the top of the page. If you are struggling to figure out the indices try printing out the header which is returned from the *read_csv* function with the data to see way data is stored in each column.
-```
-# index_position = ?
-# index_pts = ?
-# index_ast = ?
-```
-By storing the index of age in this variable you can simply type *index_team* whenever you are trying to access the team for a given player.
-Once you've done this the general structure of the function should be:
+This function has two parameters: *data* which contains the data you read in the last step and *team* which is the team you will be filtering for.
+The rest of the project will be much easier if you don't have to keep going back to the dataset to remember which values are stored where. It is recomended to use the global variables on the top of the page. Once you have done that, you can complete this function by comparing the team row of each player to the team you are filtering by. If they match, add them to 
 ```
 # THIS IS PSEUDOCODE IT WILL NOT RUN
 def filter_data
   for row in data
-    if row[index_postion] is equal to *position argument* add it to the filtered dataset.
+    if row[team_index] is equal to *team argument* add it to the filtered dataset.
 ```
 If you are struggling with this part please look back at your CSV Lab as much of what you learned in that lab applies to the first 2 steps of this project.
 
-### Step 3 - Finding Best Player:
+#### Testing tip (optional):
+```python
+league = csv_reader("NBA24-25season.csv")
+nuggets = filter_team(league, "DEN")
+print(len(nuggets))
+#This test output should be 17, as that is how many players were on the Nuggets 2024/2025 roster.
+```
+### Step 3 - Finding Best Player for a Stat:
 
-The `find_max()` function identifies the player with the highest value for a specific statistic. This function requires two parameters:
-- `data`: The filtered dataset containing players of a specific position
-- `stat_index`: The column index of the statistic we want to maximize
+The `find_stat_max()` function identifies the player with the highest value for a specific statistic. This function requires two parameters:
+- `data`: The dataset containing player data
+- `col`: The column index of the statistic we want to find the max for. (You can test this with any global variable you defined in step 0)
 
 The function implements a straightforward maximum-finding algorithm:
 
-1. It initializes `max_player` with the first player in the dataset
-2. It iterates through each player in the dataset
-3. It compares the current player's statistic with the current maximum
-4. If the current player's statistic is **greater than** the current maximum, this player becomes the new maximum
+1. It initializes `max_player` to an empty string that will be updated with the best player's name eventually
+2. Also initializes `max_value` to 0, which is where you'll store the best players numerical value.
+3. It iterates through each player in the dataset
+4. It compares the current player's statistic with the current maximum
+5. If the current player's statistic is **greater than** the current maximum, this player and their value become the new maximums
+
+#### **Tip: It is important that you make sure to cast the stat into a float!**
 
 ```python
 #THIS IS PSEUDOCODE IT WILL NOT RUN
-max_player = data[0]
+set max_player to ''
+set max_valiue to 0
 # Loop through each player in the filtered data
 for each row in data:
     # Compare current player's stat with maximum player's stat
     # CRITICAL: Must use > comparison for correct results
-    if (row stat) > (max_player stat):
+    if float(row stat) > (max_value):
         # Update maximum player when better one is found
-        max_player = row
+        max_player = player name
+        max_value = player value
         
-# Return the entire player record, not just the value
-return max_player
+# Return the two values in a list
+return [max_player, max_value]
 ```
 
-### Step 4 - Building the Team:
+### Step 4 - Finding the Best Player for a Stat by a Given Position:
 
-The `build_team()` function assembles the optimal basketball team by finding the best player for each position based on specified statistics. This function takes two arguments:
-- `data`: The complete dataset of all players
-- `team_template`: A dictionary that maps positions to statistical indices for selection
+The `find_stat_max_by_position()` function builds on the previous one but adds another layer by filtering by position as well. This function requires three parameters
+- `data`: The dataset containing player data
+- `col`: The column index of the statistic we want to find the max for. (You can test this with any global variable you defined in step 0)
+- `pos`: The position you are filtering by. Choose from `"PG", "SG", "SF", "PF", "C"` when calling.
 
 The function works by:
 
