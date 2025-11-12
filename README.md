@@ -130,23 +130,35 @@ The `find_stat_max_by_position()` function builds on the previous one but adds a
 
 The function works by:
 
-1. Initializing an empty team dictionary with all five basketball positions (PG, SG, SF, PF, C) set to None
-2. Iterating through each position-statistic pair in the team_template
-3. For each position:
-   - Filtering the dataset to only include players of that position using `filter_data()`
-   - Finding the best player for that position based on the specified statistic using `find_max()`
-   - Adding that player to the team dictionary under the appropriate position key
+1. Filtering the data by a certain position **first**
+2. Once you have the data filtered by position, you can call the `find_stat_max()` on that data to find the max value on the position specific data.
+3. It should return a list like the one in the prior function, but with the position included now as well. `[max_player, max_value, pos]`
 
-The team dictionary uses lowercase position abbreviations as keys ('pg', 'sg', 'sf', 'pf', 'c') with each value being the complete player record.
+**Hint: The `find_stat_max()` function already returns `[max_player, max_value]`, now you just need to add the position to that list.**
 
-This approach creates a modular design where the `build_team()` function coordinates the overall team creation process by utilizing the specialized filtering and player selection functions from previous steps.
 
-### Step 5 - Calculate team rating:
-The `calculate_team_rating()` checks the overall performance of the team generated in the last step:
-- `team`: A dictionary containing the team we made in step 4\
-This function should initalize a variable *total* to 0. Then foreach position,player item in *team*:
-    - Check if player exists with *if player:* (this is good practice but not strictly neccessary)
-    - Add the players PRA score (contained in the last column of the dataset) to *total*
+### Step 5 - Find the most reliable player/s for a team:
+The `find_most_reliable()` function will return a list of lists of reliable players and their starting proportion. `[player_name, starting_proportion]` This will only
+need one parameter:
+- `data`: This is the dataset for which you want to find the reliable players for.
+  
+**Important note**: This step uses team data that has already been filtered. Write this function assuming it is getting a list of filtered players from one team only.
+You do not need to look through the whole league or check what team a player is on inside this function. Instead, when you call this function you should first call your filter_team() function, then use that result as the data argument.
+
+For this project, player is considered *reliable* if they start 95% or more of the games they played. 
+
+To compute this value, you must index two separate columns and divide the two. `games_started / games_played.`
+
+```python
+#THIS IS PSEUDOCODE IT WILL NOT RUN
+set an empty list you will add reliable players to []
+
+for each row in data:
+   proportion of games started = int(games_started)/ int(games_played)
+   if the proportion of games started is greater than or equal to 0.95:
+      append a list containing their name and their percent of games started to your empty list.
+   
+```
 
 Finally return the *total* rounded to one decimal place with:
 ```
