@@ -232,7 +232,7 @@ Jamal Murray started 100.0% of the games he was available.
 Michael Porter Jr. started 100.0% of the games he was available.
 ```
 
-**The stats and players you see below are different as this output is for the 2023/2024 season**
+**The stats and players we have provided above are different as this output is for the 2023/2024 season**
 
 
 
